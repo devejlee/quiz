@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -9,7 +9,6 @@ const Quiz: NextPage = () => {
   const [questionCount, setQuestionCount] = useState(0)
   const [answerCount, setAnswerCount] = useState(0)
   const [answered, setAnswered] = useState(false)
-  const correctAnswerRef = useRef(null)
 
   useEffect(() => {
     const results = JSON.parse(window.localStorage.getItem('results') || '{}')
@@ -33,7 +32,6 @@ const Quiz: NextPage = () => {
     } else {
       alert('choose an answer')
     }
-    correctAnswerRef.current?.classList.remove(styles.correct)
   }
 
   return (
@@ -48,22 +46,24 @@ const Quiz: NextPage = () => {
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">the quiz</a>
         </h1>
-        {data.slice(questionCount, questionCount + 1).map((d, index) => (
-          <div key={index}>
+        {questionCount !== data.length && (
+          <p>questionCount: {questionCount + 1} out of {data.length}</p>
+        )}
+        {data.slice(questionCount, questionCount + 1).map((d) => (
+          <div key={d.correct_answer}>
             <p dangerouslySetInnerHTML={{ __html: d.question }} />
             {d.incorrect_answers.map((d: string) => (
               <p key={d} dangerouslySetInnerHTML={{ __html: d }} onClick={(e) => handleClick(false, e.target)} />
             ))}
-            <p ref={correctAnswerRef} dangerouslySetInnerHTML={{ __html: d.correct_answer }} onClick={(e) => handleClick(true, e.target)} />
+            <p dangerouslySetInnerHTML={{ __html: d.correct_answer }} onClick={(e) => handleClick(true, e.target)} />
           </div>
         ))}
 
-        {questionCount !== data.length ? (
-          <>
-            <p>questionCount: {questionCount + 1} out of {data.length}</p>
-            <button onClick={showNextQuestion}>next</button>
-          </>
-        ) : (
+        {answered && (
+          <button onClick={showNextQuestion}>next</button>
+        )}
+
+        {questionCount === data.length && (
           <p>answerCount: {answerCount}</p>
         )}
 
