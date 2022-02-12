@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
 import styles from '../styles/quiz.module.scss'
 
 const Quiz: NextPage = () => {
@@ -26,12 +27,8 @@ const Quiz: NextPage = () => {
   }
 
   const showNextQuestion = (): void => {
-    if (answered) {
-      setQuestionCount(questionCount => questionCount + 1)
-      setAnswered(false)
-    } else {
-      alert('choose an answer')
-    }
+    setQuestionCount(questionCount => questionCount + 1)
+    setAnswered(false)
   }
 
   return (
@@ -64,7 +61,13 @@ const Quiz: NextPage = () => {
         )}
 
         {questionCount === data.length && (
-          <p>answerCount: {answerCount}</p>
+          <>
+            <p>correct answers: {answerCount}</p>
+            <p>wrong answers: {data.length - answerCount}</p>
+            <Link href="/">
+              <a>Try again</a>
+            </Link>
+          </>
         )}
 
       </main>
