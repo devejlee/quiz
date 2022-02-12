@@ -10,8 +10,11 @@ const Quiz: NextPage = () => {
   const [questionCount, setQuestionCount] = useState(0)
   const [answerCount, setAnswerCount] = useState(0)
   const [answered, setAnswered] = useState(false)
+  const [startTime, setStartTime] = useState({})
 
   useEffect(() => {
+    const start = new Date();
+    setStartTime(start)
     const results = JSON.parse(window.localStorage.getItem('results') || '{}')
     setData(results)
   }, []);
@@ -29,6 +32,19 @@ const Quiz: NextPage = () => {
   const showNextQuestion = (): void => {
     setQuestionCount(questionCount => questionCount + 1)
     setAnswered(false)
+  }
+
+  const timePassed = (endTime: Date): string => {
+    let timeDiff = +endTime - +startTime
+    timeDiff /= 1000
+    let minutes = timeDiff / 60
+    if (minutes >= 1) {
+      let decimal = minutes - Math.floor(minutes)
+      let remainingSeconds = decimal * 30
+      return `${Math.round(minutes)} minutes and ${Math.round(remainingSeconds)} seconds`
+    } else {
+      return `${Math.round(timeDiff)} seconds`
+    }
   }
 
   return (
@@ -62,6 +78,7 @@ const Quiz: NextPage = () => {
 
         {questionCount === data.length && (
           <>
+            <p>{timePassed(new Date())}</p>
             <p>correct answers: {answerCount}</p>
             <p>wrong answers: {data.length - answerCount}</p>
             <Link href="/">
