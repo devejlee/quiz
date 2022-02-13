@@ -10,24 +10,32 @@ const Quiz: NextPage = () => {
   const [answerCount, setAnswerCount] = useState(0)
   const [answered, setAnswered] = useState(false)
   const [startTime, setStartTime] = useState({})
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async (): Promise<void> => {
-    const response = await fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple");
-    const data = await response.json();
-    const newResults = data.results.map((result: any) => {
-      result = JSON.parse(JSON.stringify(result))
-      result.incorrect_answers.push(result.correct_answer)
-      result.incorrect_answers.sort()
-      return result
-    })
-    setData(newResults)
-    const start = new Date();
-    setStartTime(start)
-  };
+    try {
+      setLoading(true)
+      const response = await fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple");
+      const data = await response.json();
+      const newResults = data.results.map((result: any) => {
+        result = JSON.parse(JSON.stringify(result))
+        result.incorrect_answers.push(result.correct_answer)
+        result.incorrect_answers.sort()
+        return result
+      })
+      setData(newResults)
+      const start = new Date();
+      setStartTime(start)
+    } catch (error) {
+      console.log('error', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const openQuiz = (): void => {
     setStartQuiz(true)
@@ -39,12 +47,14 @@ const Quiz: NextPage = () => {
     setAnswerCount(0)
   }
 
+  const parseEntities = (text: string) => new DOMParser().parseFromString(text, 'text/html').body.innerText;
+
   const handleClick = (e: any, answer: string): void => {
     setAnswered(true)
-    if (e.textContent === answer && !answered) {
+    if (e.textContent === parseEntities(answer) && !answered) {
       e.classList.add(styles.correct)
       setAnswerCount(answerCount => answerCount + 1)
-    } else if (e.textContent !== answer && !answered) {
+    } else if (e.textContent !== parseEntities(answer) && !answered) {
       e.classList.add(styles.incorrect)
     }
   }
@@ -84,33 +94,39 @@ const Quiz: NextPage = () => {
             <button className={styles.quizButton} onClick={openQuiz}>퀴즈 풀기</button>
           </>
         ) : (
-          <div className={styles.card}>
-            {questionCount !== data.length && (
-              <p className={styles.questionCount}>Question: {questionCount + 1} / {data.length}</p>
+          <>
+            {loading ? (
+              <div>Loading Questions...</div>
+            ) : (
+              <div className={styles.card}>
+                {questionCount !== data.length && (
+                  <p className={styles.questionCount}>Question: {questionCount + 1} / {data.length}</p>
+                )}
+                {data.slice(questionCount, questionCount + 1).map((d) => {
+                  const answer = d.correct_answer
+                  return (
+                    <div key={d.correct_answer}>
+                      <p dangerouslySetInnerHTML={{ __html: d.question }} className={styles.question} />
+                      {d.incorrect_answers.map((d: string) => (
+                        <p key={d} dangerouslySetInnerHTML={{ __html: d }} className={styles.choice} onClick={(e) => handleClick(e.target, answer)} />
+                      ))}
+                    </div>
+                  )
+                })}
+                {answered && (
+                  <button className={styles.nextButton} onClick={showNextQuestion}>{questionCount === data.length - 1 ? '결과 보기' : '다음 문항'}</button>
+                )}
+                {questionCount === data.length && (
+                  <>
+                    <p>{timePassed(new Date())}</p>
+                    <p>correct answers: {answerCount}</p>
+                    <p>wrong answers: {data.length - answerCount}</p>
+                    <button onClick={restartQuiz}>Try again</button>
+                  </>
+                )}
+              </div>
             )}
-            {data.slice(questionCount, questionCount + 1).map((d) => {
-              const answer = d.correct_answer
-              return (
-                <div key={d.correct_answer}>
-                  <p dangerouslySetInnerHTML={{ __html: d.question }} className={styles.question} />
-                  {d.incorrect_answers.map((d: string) => (
-                    <p key={d} dangerouslySetInnerHTML={{ __html: d }} className={styles.choice} onClick={(e) => handleClick(e.target, answer)} />
-                  ))}
-                </div>
-              )
-            })}
-            {answered && (
-              <button className={styles.nextButton} onClick={showNextQuestion}>{questionCount === data.length - 1 ? '결과 보기' : '다음 문항'}</button>
-            )}
-            {questionCount === data.length && (
-              <>
-                <p>{timePassed(new Date())}</p>
-                <p>correct answers: {answerCount}</p>
-                <p>wrong answers: {data.length - answerCount}</p>
-                <button onClick={restartQuiz}>Try again</button>
-              </>
-            )}
-          </div>
+          </>
         )}
       </main>
     </div>
