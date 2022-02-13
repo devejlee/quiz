@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
 import styles from '../styles/quiz.module.scss'
 
@@ -16,15 +15,21 @@ const Quiz: NextPage = () => {
     const start = new Date();
     setStartTime(start)
     const results = JSON.parse(window.localStorage.getItem('results') || '{}')
-    setData(results)
+    const newResults = results.map((result: any) => {
+      result = JSON.parse(JSON.stringify(result))
+      result.incorrect_answers.push(result.correct_answer)
+      result.incorrect_answers.sort()
+      return result
+    })
+    setData(newResults)
   }, []);
 
-  const handleClick = (value: boolean, e: any): void => {
+  const handleClick = (e: any, answer: string): void => {
     setAnswered(true)
-    if (value && !answered) {
+    if (e.textContent === answer && !answered) {
       e.classList.add(styles.correct)
       setAnswerCount(answerCount => answerCount + 1)
-    } else if (!value && !answered) {
+    } else if (e.textContent !== answer && !answered) {
       e.classList.add(styles.incorrect)
     }
   }
@@ -37,10 +42,10 @@ const Quiz: NextPage = () => {
   const timePassed = (endTime: Date): string => {
     let timeDiff = +endTime - +startTime
     timeDiff /= 1000
-    let minutes = timeDiff / 60
+    const minutes = timeDiff / 60
     if (minutes >= 1) {
-      let decimal = minutes - Math.floor(minutes)
-      let remainingSeconds = decimal * 30
+      const decimal = minutes - Math.floor(minutes)
+      const remainingSeconds = decimal * 30
       return `${Math.round(minutes)} minutes and ${Math.round(remainingSeconds)} seconds`
     } else {
       return `${Math.round(timeDiff)} seconds`
@@ -60,17 +65,19 @@ const Quiz: NextPage = () => {
           {questionCount !== data.length && (
             <p className={styles.questionCount}>Question: {questionCount + 1} / {data.length}</p>
           )}
-          {data.slice(questionCount, questionCount + 1).map((d) => (
-            <div key={d.correct_answer}>
-              <p dangerouslySetInnerHTML={{ __html: d.question }} className={styles.question} />
-              {d.incorrect_answers.map((d: string) => (
-                <p key={d} dangerouslySetInnerHTML={{ __html: d }} className={styles.choice} onClick={(e) => handleClick(false, e.target)} />
-              ))}
-              <p dangerouslySetInnerHTML={{ __html: d.correct_answer }} className={styles.choice} onClick={(e) => handleClick(true, e.target)} />
-            </div>
-          ))}
+          {data.slice(questionCount, questionCount + 1).map((d) => {
+            const answer = d.correct_answer
+            return (
+              <div key={d.correct_answer}>
+                <p dangerouslySetInnerHTML={{ __html: d.question }} className={styles.question} />
+                {d.incorrect_answers.map((d: string) => (
+                  <p key={d} dangerouslySetInnerHTML={{ __html: d }} className={styles.choice} onClick={(e) => handleClick(e.target, answer)} />
+                ))}
+              </div>
+            )
+          })}
           {answered && (
-            <button className={styles.nextButton} onClick={showNextQuestion}>다음 문항</button>
+            <button className={styles.nextButton} onClick={showNextQuestion}>{questionCount === data.length - 1 ? '결과 보기' : '다음 문항'}</button>
           )}
           {questionCount === data.length && (
             <>

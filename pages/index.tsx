@@ -5,7 +5,6 @@ import Link from 'next/link'
 import styles from '../styles/index.module.scss'
 
 const Home: NextPage = () => {
-
   useEffect(() => {
     fetchData();
   }, []);
