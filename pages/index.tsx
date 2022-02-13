@@ -71,9 +71,9 @@ const Quiz: NextPage = () => {
     if (minutes >= 1) {
       const decimal = minutes - Math.floor(minutes)
       const remainingSeconds = decimal * 30
-      return `${Math.round(minutes)} minutes and ${Math.round(remainingSeconds)} seconds`
+      return `${Math.round(minutes)} 분 ${Math.round(remainingSeconds)} 초`
     } else {
-      return `${Math.round(timeDiff)} seconds`
+      return `${Math.round(timeDiff)} 초`
     }
   }
 
@@ -96,7 +96,7 @@ const Quiz: NextPage = () => {
         ) : (
           <>
             {loading ? (
-              <div>Loading Questions...</div>
+              <p className={styles.loading}>Loading Questions...</p>
             ) : (
               <div className={styles.card}>
                 {questionCount !== data.length && (
@@ -118,10 +118,10 @@ const Quiz: NextPage = () => {
                 )}
                 {questionCount === data.length && (
                   <>
-                    <p>{timePassed(new Date())}</p>
-                    <p>correct answers: {answerCount}</p>
-                    <p>wrong answers: {data.length - answerCount}</p>
-                    <button onClick={restartQuiz}>Try again</button>
+                    <p>소요된 시간: {timePassed(new Date())}</p>
+                    <p>정답 수: {answerCount}</p>
+                    <p>오답 수: {data.length - answerCount}</p>
+                    <button onClick={restartQuiz}>다시 풀기</button>
                   </>
                 )}
               </div>

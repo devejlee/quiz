@@ -25,6 +25,10 @@
   }
 }
 
+.loading {
+  font-size: 2rem;
+}
+
 .card {
   padding: 2em 4em;
   border-radius: 10px;
@@ -106,6 +110,10 @@
     padding: .75em 1em;
   }
 
+  .loading {
+    font-size: 1.5rem;
+  }
+
   .card {
     padding: 2em;
     width: 600px;
@@ -149,6 +157,10 @@
   .quizButton {
     font-size: 1rem;
     padding: .5em .75em;
+  }
+
+  .loading {
+    font-size: 1rem;
   }
 
   .card {
