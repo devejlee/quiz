@@ -113,7 +113,7 @@ const Quiz: NextPage = () => {
                   )
                 })}
                 {answered && (
-                  <button className={styles.nextButton} onClick={showNextQuestion}>{questionCount === data.length - 1 ? '결과 보기' : '다음 문항'}</button>
+                  <button className={styles.nextButton} onClick={showNextQuestion} data-cy="next-button">{questionCount === data.length - 1 ? '결과 보기' : '다음 문항'}</button>
                 )}
                 {questionCount === data.length && (
                   <>
