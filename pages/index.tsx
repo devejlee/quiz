@@ -28,10 +28,9 @@ const Quiz: NextPage = () => {
         return result
       })
       setData(newResults)
-      const start = new Date();
-      setStartTime(start)
+      setStartTime(new Date())
     } catch (error) {
-      console.log('error', error)
+      console.error(error)
     } finally {
       setLoading(false)
     }
@@ -91,14 +90,14 @@ const Quiz: NextPage = () => {
             <h1 className={styles.title}>
               퀴즈에 환영합니다!
             </h1>
-            <button className={styles.quizButton} onClick={openQuiz}>퀴즈 풀기</button>
+            <button className={styles.quizButton} onClick={openQuiz} data-cy="start-quiz-btn">퀴즈 풀기</button>
           </>
         ) : (
           <>
             {loading ? (
               <p className={styles.loading}>Loading Questions...</p>
             ) : (
-              <div className={styles.card}>
+              <div className={styles.card} data-cy="quiz-card">
                 {questionCount !== data.length && (
                   <p className={styles.questionCount}>Question: {questionCount + 1} / {data.length}</p>
                 )}
@@ -108,7 +107,7 @@ const Quiz: NextPage = () => {
                     <div key={d.correct_answer}>
                       <p dangerouslySetInnerHTML={{ __html: d.question }} className={styles.question} />
                       {d.incorrect_answers.map((d: string) => (
-                        <p key={d} dangerouslySetInnerHTML={{ __html: d }} className={styles.choice} onClick={(e) => handleClick(e.target, answer)} />
+                        <p key={d} dangerouslySetInnerHTML={{ __html: d }} className={styles.choice} onClick={(e) => handleClick(e.target, answer)} data-cy="quiz-choice" />
                       ))}
                     </div>
                   )
