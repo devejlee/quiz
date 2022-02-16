@@ -15,4 +15,11 @@ describe('quiz app', () => {
     cy.get('[data-cy=quiz-choice]').first().click()
     cy.get('[data-cy=next-button]').should('have.text', '다음 문항')
   })
+  it('답안이 맞았는지 틀렸는지 바로 알 수 있다.', () => {
+    cy.get('[data-cy=start-quiz-btn]').click()
+    cy.get('[data-cy=quiz-choice]').first().click().should('satisfy', ($el) => {
+      const classList = Array.from($el[0].classList);
+      return classList.includes('styles_choice__9TDc_') || classList.includes('styles_incorrect__X9M0_')
+    })
+  })
 })
