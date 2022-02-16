@@ -22,4 +22,10 @@ describe('quiz app', () => {
       return classList.includes('styles_choice__9TDc_') || classList.includes('styles_incorrect__X9M0_')
     })
   })
+  it('다음 문항 버튼을 클릭하여 다음 문항으로 이동할 수 있다.', () => {
+    cy.get('[data-cy=start-quiz-btn]').click()
+    cy.get('[data-cy=quiz-choice]').first().click()
+    cy.get('[data-cy=next-button]').click()
+    cy.get('[data-cy=quiz-card]').should('exist')
+  })
 })
