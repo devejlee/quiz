@@ -1,4 +1,4 @@
-describe('quiz app', () => {
+describe('퀴즈 필수 구현 테스트', () => {
   beforeEach(() => {
     cy.visit('localhost:3000/')
   })
@@ -27,5 +27,15 @@ describe('quiz app', () => {
     cy.get('[data-cy=quiz-choice]').first().click()
     cy.get('[data-cy=next-button]').click()
     cy.get('[data-cy=quiz-card]').should('exist')
+  })
+  it('모든 문항을 다 풀면 퀴즈를 마칠 때까지 소요된 시간, 정답 개수, 오답 수 결과 정보를 볼 수 있다.', () => {
+    cy.get('[data-cy=start-quiz-btn]').click()
+    for (let i = 0; i < 10; i++) {
+      cy.get('[data-cy=quiz-choice]').first().click()
+      cy.get('[data-cy=next-button]').click()
+    }
+    cy.get('[data-cy=quiz-card]').contains('소요된 시간')
+    cy.get('[data-cy=quiz-card]').contains('정답 수')
+    cy.get('[data-cy=quiz-card]').contains('오답 수')
   })
 })
