@@ -46,6 +46,7 @@ const Quiz: NextPage = () => {
     fetchData();
     setQuestionCount(0)
     setAnswerCount(0)
+    setShowNotes(false)
   }
 
   const openNotes = (): void => {
@@ -126,35 +127,36 @@ const Quiz: NextPage = () => {
                   <button className={styles.nextButton} onClick={showNextQuestion} data-cy="next-button">{questionCount === data.length - 1 ? '결과 보기' : '다음 문항'}</button>
                 )}
                 {questionCount === data.length && (
-                  <>
-                    <p>소요된 시간: {timePassed(new Date())}</p>
+                  <div className={styles.results}>
+                    <h2>결과 정보</h2>
+                    <p className={styles.timePassed}>소요된 시간: {timePassed(new Date())}</p>
                     <p>정답 수: {answerCount}</p>
                     <p>오답 수: {data.length - answerCount}</p>
-                    <button onClick={restartQuiz}>다시 풀기</button>
+                    <button className={styles.restartButton} onClick={restartQuiz}>다시 풀기</button>
                     {showNotes ? (
-                      <div>
-                        <p>오답 노트</p>
+                      <div className={styles.notesWrap}>
+                        <h3>오답 노트</h3>
                         {notes.map(note => (
-                          <div key={note.question}>
+                          <div key={note.question} className={styles.note}>
                             <div>
-                              <span>질문 </span>
+                              <span>질문: </span>
                               <span dangerouslySetInnerHTML={{ __html: note.question }} />
                             </div>
                             <div>
-                              <span>정답 </span>
+                              <span>정답: </span>
                               <span dangerouslySetInnerHTML={{ __html: note.correct_answer }} />
                             </div>
                             <div>
-                              <span>오답 </span>
+                              <span>오답: </span>
                               <span dangerouslySetInnerHTML={{ __html: note.choice }} />
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <button onClick={openNotes}>오답 노트 보기</button>
+                      <button className={styles.notesButton} onClick={openNotes}>오답 노트 보기</button>
                     )}
-                  </>
+                  </div>
                 )}
               </div>
             )}
