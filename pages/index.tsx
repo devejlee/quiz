@@ -46,6 +46,7 @@ const Quiz: NextPage = () => {
     fetchData();
     setQuestionCount(0)
     setAnswerCount(0)
+    setNotes([])
     setShowNotes(false)
   }
 
@@ -132,6 +133,10 @@ const Quiz: NextPage = () => {
                     <p className={styles.timePassed}>소요된 시간: {timePassed(new Date())}</p>
                     <p>정답 수: {answerCount}</p>
                     <p>오답 수: {data.length - answerCount}</p>
+                    <div className={styles.graph}>
+                      <div><span>정답</span></div>
+                      <div><span>오답</span></div>
+                    </div>
                     <button className={styles.restartButton} onClick={restartQuiz}>다시 풀기</button>
                     {showNotes ? (
                       <div className={styles.notesWrap}>

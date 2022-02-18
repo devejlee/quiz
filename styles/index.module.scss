@@ -117,6 +117,18 @@
   }
 }
 
+.graph {
+  margin-bottom: 1em;
+  border: 1px solid red;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  > div {
+    border: 1px solid black;
+    flex-grow: 1;
+  }
+}
+
 .restartButton {
   padding: .5em 1em;
   width: 125px;
