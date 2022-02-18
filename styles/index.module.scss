@@ -35,6 +35,8 @@
   box-shadow: 0px 3px 15px rgba(0,0,0,0.2);
   width: 800px;
   min-height: 525px;
+  max-height: 600px;
+  overflow: auto;
 }
 
 .questionCount {

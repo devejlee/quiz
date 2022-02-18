@@ -11,6 +11,8 @@ const Quiz: NextPage = () => {
   const [answered, setAnswered] = useState(false)
   const [startTime, setStartTime] = useState({})
   const [loading, setLoading] = useState(false)
+  const [notes, setNotes] = useState([] as any[])
+  const [showNotes, setShowNotes] = useState(false)
 
   useEffect(() => {
     fetchData();
@@ -46,14 +48,21 @@ const Quiz: NextPage = () => {
     setAnswerCount(0)
   }
 
+  const openNotes = (): void => {
+    setShowNotes(true)
+  }
+
   const parseEntities = (text: string) => new DOMParser().parseFromString(text, 'text/html').body.innerText;
 
-  const handleClick = (e: any, answer: string): void => {
+  const handleClick = (e: any, question: string, answer: string): void => {
     setAnswered(true)
-    if (e.textContent === parseEntities(answer) && !answered) {
+    const correct_answer = parseEntities(answer)
+    const choice = e.textContent
+    if (choice === correct_answer && !answered) {
       e.classList.add(styles.correct)
       setAnswerCount(answerCount => answerCount + 1)
-    } else if (e.textContent !== parseEntities(answer) && !answered) {
+    } else if (choice !== correct_answer && !answered) {
+      setNotes(notes => ([...notes, { correct_answer, question, choice }]))
       e.classList.add(styles.incorrect)
     }
   }
@@ -102,12 +111,13 @@ const Quiz: NextPage = () => {
                   <p className={styles.questionCount}>Question: {questionCount + 1} / {data.length}</p>
                 )}
                 {data.slice(questionCount, questionCount + 1).map((d) => {
+                  const question = d.question
                   const answer = d.correct_answer
                   return (
                     <div key={d.correct_answer}>
                       <p dangerouslySetInnerHTML={{ __html: d.question }} className={styles.question} />
                       {d.incorrect_answers.map((d: string) => (
-                        <p key={d} dangerouslySetInnerHTML={{ __html: d }} className={styles.choice} onClick={(e) => handleClick(e.target, answer)} data-cy="quiz-choice" />
+                        <p key={d} dangerouslySetInnerHTML={{ __html: d }} className={styles.choice} onClick={(e) => handleClick(e.target, question, answer)} data-cy="quiz-choice" />
                       ))}
                     </div>
                   )
@@ -121,6 +131,29 @@ const Quiz: NextPage = () => {
                     <p>정답 수: {answerCount}</p>
                     <p>오답 수: {data.length - answerCount}</p>
                     <button onClick={restartQuiz}>다시 풀기</button>
+                    {showNotes ? (
+                      <div>
+                        <p>오답 노트</p>
+                        {notes.map(note => (
+                          <div key={note.question}>
+                            <div>
+                              <span>질문 </span>
+                              <span dangerouslySetInnerHTML={{ __html: note.question }} />
+                            </div>
+                            <div>
+                              <span>정답 </span>
+                              <span dangerouslySetInnerHTML={{ __html: note.correct_answer }} />
+                            </div>
+                            <div>
+                              <span>오답 </span>
+                              <span dangerouslySetInnerHTML={{ __html: note.choice }} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <button onClick={openNotes}>오답 노트 보기</button>
+                    )}
                   </>
                 )}
               </div>
