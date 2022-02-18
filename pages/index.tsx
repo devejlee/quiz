@@ -159,7 +159,11 @@ const Quiz: NextPage = () => {
                         ))}
                       </div>
                     ) : (
-                      <button className={styles.notesButton} onClick={openNotes}>오답 노트 보기</button>
+                      <>
+                        {notes.length > 0 && (
+                          <button className={styles.notesButton} onClick={openNotes}>오답 노트 보기</button>
+                        )}
+                      </>
                     )}
                   </div>
                 )}
