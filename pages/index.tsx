@@ -134,8 +134,8 @@ const Quiz: NextPage = () => {
                     <p>정답 수: {answerCount}</p>
                     <p>오답 수: {data.length - answerCount}</p>
                     <div className={styles.graph}>
-                      <div><span>정답</span></div>
-                      <div><span>오답</span></div>
+                      <div style={{ height: `${answerCount * 10}%` }}><span>정답 {answerCount * 10}%</span></div>
+                      <div style={{ height: `${(data.length - answerCount) * 10}%` }}><span>오답 {(data.length - answerCount) * 10}%</span></div>
                     </div>
                     <button className={styles.restartButton} onClick={restartQuiz}>다시 풀기</button>
                     {showNotes ? (

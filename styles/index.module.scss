@@ -118,14 +118,28 @@
 }
 
 .graph {
+  position: relative;
   margin-bottom: 1em;
-  border: 1px solid red;
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 200px;
   display: flex;
   > div {
     border: 1px solid black;
     flex-grow: 1;
+    position: absolute;
+    bottom: 0;
+    &:first-child {
+      left: 0;
+      right: 50%;
+      background: #0a0;
+      color: #fff;
+    }
+    &:nth-child(2) {
+      left: 50%;
+      right: 0%;
+      background: #f00;
+      color: #fff;
+    }
   }
 }
 
