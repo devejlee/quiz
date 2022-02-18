@@ -124,10 +124,12 @@
   height: 200px;
   display: flex;
   > div {
-    border: 1px solid black;
-    flex-grow: 1;
     position: absolute;
     bottom: 0;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     &:first-child {
       left: 0;
       right: 50%;
